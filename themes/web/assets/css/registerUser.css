@@ -1,0 +1,75 @@
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f3e9c9;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 30px;
+      background-color: #f3e9c9;
+      border-bottom: 2px solid #ccc;
+    }
+
+    .logo img {
+      height: 50px;
+    }
+
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #003b3b;
+      font-weight: bold;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    form {
+      max-width: 500px;
+      background-color: #fff9e6;
+      margin: auto;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    input[type="file"] {
+      background-color: white;
+    }
+
+    button {
+      margin-top: 25px;
+      width: 100%;
+      padding: 12px;
+      background-color: #004444;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #006666;
+    }

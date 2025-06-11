@@ -1,0 +1,85 @@
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f3e9c9;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 30px;
+      border-bottom: 2px solid #ccc;
+      background-color: #f3e9c9;
+    }
+
+    .logo img {
+      height: 50px;
+    }
+
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #003b3b;
+      font-weight: bold;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .carrinho {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px;
+      border-bottom: 1px solid #000;
+    }
+
+    .item img {
+      width: 70px;
+      height: 70px;
+      border-radius: 5px;
+      margin-right: 15px;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      flex: 1;
+    }
+
+    .info-texto {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-texto span {
+      font-size: 18px;
+    }
+
+    .preco {
+      font-weight: bold;
+      margin-left: 20px;
+      color: #003b3b;
+    }
+
+    .btn-remover {
+      padding: 8px 18px;
+      background-color: #004444;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .btn-remover:hover {
+      background-color: #006666;
+    }

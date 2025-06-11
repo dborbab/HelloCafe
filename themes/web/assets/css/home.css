@@ -1,0 +1,170 @@
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            color: #fff;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .inicio {
+            height: 100vh;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 20px;
+            background-image: url('/mvc-project-tarde/themes/web/assets/images/cafehello.png');
+            background-size: cover;
+            background-position: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .container {
+            text-align: center;
+            padding: 30px 20px;
+            border-radius: 10px;
+            max-width: 350px;
+        }
+
+        .logo img {
+            width: 300px;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #2d4d53, #1f3a40);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s ease, background 0.3s ease;
+        }
+
+        .button:hover {
+            background: linear-gradient(135deg, #1f3a40, #2d4d53);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .link {
+            margin-top: 10px;
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            text-align: start;
+        }
+
+        .sobre {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            padding: 60px 40px;
+            background-color: #fdf5dc;
+            color: #1a1a1a;
+            font-family: 'Arial', sans-serif;
+            flex-wrap: wrap;
+        }
+
+        .sobre .imagens {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .sobre .imagens #img1 {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 2px 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .sobre .imagens #img2 {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 2px 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .sobre .imagens #img3 {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 2px 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .sobre .imagens #img4 {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 2px 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .sobre .texto {
+            max-width: 400px;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .sobre .texto h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+        .cadastro-opcoes {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    padding: 60px 40px;
+    background-color: #fdf5dc;
+    flex-wrap: wrap;
+}
+
+.cadastro-opcoes .box {
+    background-color: #aac2ba;
+    color: #1a1a1a;
+    padding: 30px 25px;
+    border-radius: 12px;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 320px;
+    width: 100%;
+}
+
+.cadastro-opcoes h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #1f3a40;
+    text-align: center;
+}
+
+.cadastro-opcoes p, .cadastro-opcoes li {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.cadastro-opcoes ul {
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+.cadastro-opcoes .button {
+    margin-top: 10px;
+}
+
+.logo2{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fdf5dc; ;
+}

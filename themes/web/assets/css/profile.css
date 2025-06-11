@@ -1,0 +1,100 @@
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f3e9c9;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 30px;
+      background-color: #f3e9c9;
+      border-bottom: 2px solid #ccc;
+    }
+
+    .logo img {
+      height: 50px;
+    }
+
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #003b3b;
+      font-weight: bold;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .perfil-layout {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 40px 80px;
+    }
+
+    .dados-usuario {
+      width: 60%;
+    }
+
+    .dados-bloco {
+      background-color: #ffffffbb;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .dados-bloco h3 {
+      margin-top: 0;
+      color: #003b3b;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+
+    .dados-bloco p {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+
+    .dados-bloco p span {
+      font-weight: bold;
+      color: #003b3b;
+    }
+
+    .perfil-lado-direito {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 35%;
+    }
+
+    .foto-perfil {
+      width: 200px;
+      height: 200px;
+      background-color: #888;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .btn-editar {
+      padding: 8px 20px;
+      background-color: #004444;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+    }
+
+    .btn-editar:hover {
+      background-color: #006666;
+    }

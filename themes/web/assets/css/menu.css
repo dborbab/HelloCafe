@@ -1,0 +1,86 @@
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f3e9c9;
+    }
+
+    header {
+      background-color: #f3e9c9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 30px;
+      border-bottom: 2px solid #ccc;
+    }
+
+    .logo {
+      font-family: 'Brush Script MT', cursive;
+      font-size: 26px;
+      color: #003b3b;
+      font-weight: bold;
+    }
+
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      color: #003b3b;
+      font-weight: bold;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 30px 0 20px;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .item {
+      background-color: #fffdf5;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .item img {
+      width: 90px;
+      height: 90px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .item-info {
+      flex: 1;
+      margin: 0 15px;
+    }
+
+    .item-info h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .item-info button {
+      margin-top: 8px;
+      padding: 6px 14px;
+      background-color: #045c5c;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .item-price {
+      font-weight: bold;
+    }
+
+    .logo img{
+        height: 50px;
+    }
