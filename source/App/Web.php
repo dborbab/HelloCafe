@@ -59,10 +59,17 @@ class Web
         echo $this->view->render("registerUser", []);
     }
 
-
-    /*public function error (array $data)
+    
+           public function faqs(): void
     {
-        var_dump($data);
-    }*/
+        echo $this->view->render("faqs", []);
+    }
 
+
+    public function error(array $data): void
+    {
+        echo $this->view->render("error", [
+            "error" => $data["errcode"]
+        ]);
+    }
 }
