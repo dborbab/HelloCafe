@@ -98,44 +98,47 @@ class User extends Model {
         $this->photo = $photo;
     }
 
+
+    
     public function insert(): ?int
-    {
-        $conn = Connect::getInstance();
+{
+    $conn = Connect::getInstance();
 
-        if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)){
-            $this->message = "E-mail Inválido!";
-            return false;
-        }
-
-        $query = "SELECT * FROM users WHERE email LIKE :email";
-        $stmt = $conn->prepare($query);
-        $stmt->bindParam(":email", $this->email);
-        $stmt->execute();
-
-        if($stmt->rowCount() == 1) {
-            $this->message = "E-mail já cadastrado!";
-            return false;
-        }
-
-        $this->password = password_hash($this->password, PASSWORD_DEFAULT);
-
-
-        $query = "INSERT INTO users (name, email, password) 
-                  VALUES (:name, :email, :password)";
-
-        $stmt = $conn->prepare($query);
-        $stmt->bindParam(":name", $this->name);
-        $stmt->bindParam(":email", $this->email);
-        $stmt->bindParam(":password", $this->password);
-
-        try {
-            $stmt->execute();
-            return $conn->lastInsertId();
-        } catch (PDOException) {
-            $this->message = "Por favor, informe todos os campos!";
-            return false;
-        }
+    if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+        $this->message = "E-mail inválido!";
+        return false;
     }
+
+    $query = "SELECT * FROM users WHERE email = :email";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(":email", $this->email);
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+        $this->message = "E-mail já cadastrado!";
+        return false;
+    }
+
+    $this->password = password_hash($this->password, PASSWORD_DEFAULT);
+
+    $query = "INSERT INTO users (name, email, password, address) 
+              VALUES (:name, :email, :password, :address)";
+
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(":name", $this->name);
+    $stmt->bindParam(":email", $this->email);
+    $stmt->bindParam(":password", $this->password);
+    $stmt->bindParam(":address", $this->address);
+   // $stmt->bindParam(":photo", $this->photo);
+
+    try {
+        $stmt->execute();
+        return $conn->lastInsertId();
+    } catch (PDOException $exception) {
+        $this->message = "Erro ao cadastrar: {$exception->getMessage()}";
+        return false;
+    }
+}
 
     public function login(string $email, string $password): bool
     {
@@ -165,7 +168,6 @@ class User extends Model {
 
         return true;
     }
-
     public function update(): bool
     {
         $conn = Connect::getInstance();
@@ -183,7 +185,7 @@ class User extends Model {
 
         if($stmt->rowCount() == 1) {
             $this->message = "E-mail já cadastrado!";
-            return false;
+            return false; 
         }
 
         $query = "UPDATE users 
