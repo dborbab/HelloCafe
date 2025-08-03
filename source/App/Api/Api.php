@@ -26,7 +26,9 @@ class Api
     protected function back (mixed $response, int $code = 200) : void
     {
         http_response_code($code);
+      //  header("Content-Type: application/json");
         echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        exit;
     }
 
     protected function auth (): void
