@@ -35,6 +35,23 @@ $route->get("/photo","Users:getPhoto");
 $route->post("/set-password","Users:setPassword");
 $route->get("/token-validate", "Users:tokenValidate");
 $route->delete("/delete/{id}","Users:deleteUser");
+ 
+$route->group("null");
+
+/*Enterprises */
+
+$route->group("/enterprises");
+
+$route->get("/", "Enterprises:listEnterprises");
+$route->post("/createEnterprise", "Enterprises:createEnterprise");
+$route->get("/me", "Enterprises:getEnterprise");
+$route->post("/login", "Enterprises:loginEnterprise");
+$route->put("/update", "Enterprises:updateEnterprise");
+$route->post("/photo", "Enterprises:updatePhoto");
+$route->get("/photo", "Enterprises:getPhoto");
+$route->post("/set-password", "Enterprises:setPassword");
+$route->get("/token-validate", "Enterprises:tokenValidate");
+$route->delete("/delete/{id}", "Enterprises:deleteEnterprise");
 
 $route->group("null");
 
