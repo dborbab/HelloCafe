@@ -11,7 +11,7 @@ fetch(getBackendUrlApi("users/me"), {
     method: "GET",
     headers: {
         token: userAuth.token
-    }
+    } 
 }).then((response) => {
     response.json().then((data) => {
         if(data.error) {
