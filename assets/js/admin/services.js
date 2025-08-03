@@ -10,7 +10,7 @@ const modalService = document.querySelector("#edit-modal");
 const selectCategories = document.querySelector("#service_category_id");
 
 //modalService.style.display = "flex";
-let categories = fetch(`http://localhost:8080/mvc-project-tarde/api/services-categories`).then((response) => {
+let categories = fetch(`http://localhost/mvc-project-tarde/api/services-categories`).then((response) => {
     response.json()
         .then((categories) => {
             showDataSelect(categories, selectCategories);
@@ -27,7 +27,7 @@ let categories = fetch(`http://localhost:8080/mvc-project-tarde/api/services-cat
 
 //
 
-fetch(`http://localhost:8080/mvc-project-tarde/api/services/list-by-category/category/2`,{
+fetch(`http://localhost/mvc-project-tarde/api/services/list-by-category/category/2`,{
     method: "GET"
 })
     .then((response) => {
@@ -58,7 +58,7 @@ listServices.addEventListener("click", (e) => {
     if(e.target.matches("button.edit-btn")){
         console.log('edite');
         console.log();
-        fetch(`http://localhost:8080/mvc-project-tarde/api/services/service/${e.target.parentElement.getAttribute("service-id")}`, {
+        fetch(`http://localhost/mvc-project-tarde/api/services/service/${e.target.parentElement.getAttribute("service-id")}`, {
             method: "GET"
         }).then((response)=>{
             response.json()
