@@ -72,40 +72,85 @@ class Users extends Api
 }
 
 
- public function createUser(array $data): void
+// public function createUser(array $data): void
+// {
+//     header('Content-Type: application/json; charset=UTF-8');
+
+
+
+//     if (!$data) {
+//         http_response_code(400);
+//         $this->back([
+//             "type" => "error",
+//             "message" => "JSON inválido ou vazio"
+//         ]);
+//         return;
+//     }
+
+//     if (in_array("", $data)) {
+//         $this->back([
+//             "type" => "error",
+//             "message" => "Preencha todos os campos"
+//         ]);
+//         return;
+//     }
+
+
+//     $user = new User(
+//         null,
+//         $data["name"],
+//         $data["email"],
+//         $data["password"]
+//     );
+
+//     $insertUser = $user->insert();
+
+//     if (!$insertUser) {
+//         $this->back([
+//             "type" => "error",
+//             "message" => $user->getMessage()
+//         ]);
+//         return;
+//     }
+
+//     $this->back([
+//         "type" => "success",
+//         "message" => "Usuário cadastrado com sucesso!"
+//     ]);
+// }
+
+public function createUser(array $data): void
 {
     header('Content-Type: application/json; charset=UTF-8');
 
+    // Se vier vazio, assume $_POST
+    if (empty($data)) {
+        $data = $_POST;
+    }
 
-
-    if (!$data) {
-        http_response_code(400);
+    if (
+        empty($data["name"]) ||
+        empty($data["email"]) ||
+        empty($data["password"]) ||
+        empty($data["adress"])
+    ) {
         $this->back([
             "type" => "error",
-            "message" => "JSON inválido ou vazio"
+            "message" => "Preencha todos os campos obrigatórios!"
         ]);
         return;
     }
 
-    if (in_array("", $data)) {
-        $this->back([
-            "type" => "error",
-            "message" => "Preencha todos os campos"
-        ]);
-        return;
-    }
-
-
+    // Inserir usuário
     $user = new User(
         null,
         $data["name"],
         $data["email"],
-        $data["password"]
+        $data["password"],
+        $data["adress"],
     );
 
-    $insertUser = $user->insert();
-
-    if (!$insertUser) {
+    if (!$user->insert()) {
         $this->back([
             "type" => "error",
             "message" => $user->getMessage()
@@ -116,8 +161,10 @@ class Users extends Api
     $this->back([
         "type" => "success",
         "message" => "Usuário cadastrado com sucesso!"
-    ]);
+    ], 201);
 }
+
+
 
    public function loginUser (array $data) {
        
@@ -195,49 +242,49 @@ class Users extends Api
 
     }
 
-    public function updatePhoto(array $data)
-    {
+    // public function updatePhoto(array $data)
+    // {
 
-        $imageUploader = new ImageUploader();
-        $photo = (!empty($_FILES["photo"]["name"]) ? $_FILES["photo"] : null);
+    //     $imageUploader = new ImageUploader();
+    //     $photo = (!empty($_FILES["photo"]["name"]) ? $_FILES["photo"] : null);
 
-        $this->auth();
+    //     $this->auth();
 
-        if (!$photo) {
-            $this->back([
-                "type" => "error",
-                "message" => "Por favor, envie uma foto do tipo JPG ou JPEG"
-            ]);
-            return;
-        }
+    //     if (!$photo) {
+    //         $this->back([
+    //             "type" => "error",
+    //             "message" => "Por favor, envie uma foto do tipo JPG ou JPEG"
+    //         ]);
+    //         return;
+    //     }
 
-        $upload = $imageUploader->upload($photo);
+    //     $upload = $imageUploader->upload($photo);
 
-        $user = new User(
-            id: $this->userAuth->id,
-            photo: $upload
-        );
+    //     $user = new User(
+    //         id: $this->userAuth->id,
+    //         photo: $upload
+    //     );
 
-        if (!$user->updatePhoto()) {
-            $this->back([
-                "type" => "error",
-                "message" => $user->getMessage()
-            ]);
-            return;
-        }
+    //     if (!$user->updatePhoto()) {
+    //         $this->back([
+    //             "type" => "error",
+    //             "message" => $user->getMessage()
+    //         ]);
+    //         return;
+    //     }
 
-        $this->back([
-            "type" => "success",
-            "message" => $user->getMessage(),
-            "user" => [
-                "id" => $user->getId(),
-                "name" => $user->getName(),
-                "email" => $user->getEmail(),
-                "photo" => $user->getPhoto()
-            ]
-        ]);
+    //     $this->back([
+    //         "type" => "success",
+    //         "message" => $user->getMessage(),
+    //         "user" => [
+    //             "id" => $user->getId(),
+    //             "name" => $user->getName(),
+    //             "email" => $user->getEmail(),
+    //             "photo" => $user->getPhoto()
+    //         ]
+    //     ]);
 
-    }
+    // }
 
     public function getPhoto (array $data)
     {
