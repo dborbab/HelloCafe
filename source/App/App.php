@@ -13,12 +13,6 @@ class App
         $this->view = new Engine(__DIR__ . "/../../themes/app","php");
     }
 
-    public function home ()
-    {
-        //echo "<h1>Eu sou a Home...</h1>";
-        echo $this->view->render("home",[]);
-    }
-
     public function profile ()
     {
         echo $this->view->render("profile",[]);
@@ -29,4 +23,18 @@ class App
         echo $this->view->render("cart", []);
     }
 
-}
+    public function messages ()
+    {
+        echo $this->view->render("messages", []);
+    }
+    public function orders ()
+    {
+        echo $this->view->render("orders", []);
+    }
+
+        public function faqs ()
+    {
+        echo $this->view->render("faqs", []);
+    }
+
+}  
