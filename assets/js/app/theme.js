@@ -7,7 +7,7 @@ import {
 } from "./../_shared/globals.js";
 
 if(!userAuth){
-    window.location.href = getBackendUrl("login");
+ //   window.location.href = getBackendUrl("login");
 }
 
 document.querySelector("img").setAttribute("src", getBackendUrl(userAuth.photo));
@@ -25,7 +25,7 @@ fetch(getBackendUrlApi("users/token-validate"), {
         if(data.error) {
             showToast(data.error.message);
             setTimeout(() => {
-                window.location.href = getBackendUrl("login");
+            //    window.location.href = getBackendUrl("login");
             },3000);
         }
     });
