@@ -290,4 +290,6 @@ class Enterprise extends Model {
             return false;
         }
     }
+
+    
 }
