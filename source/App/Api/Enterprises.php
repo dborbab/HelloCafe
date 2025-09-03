@@ -15,26 +15,192 @@ class Enterprises extends Api
 
     public function getEnterprise()
     {
+        // Autentica primeiro
         $this->auth();
 
-        $enterprise = (new Enterprise())->selectById($this->userAuth->id);
+        // Verifica se a autenticação passou
+        if (!$this->userAuth) {
+            $this->back([
+                "type" => "error",
+                "message" => "Token inválido ou expirado"
+            ], 401);
+            return;
+        }
 
-        $this->back([
-            "type" => "success",
-            "message" => "Empresa autenticada",
-            "enterprise" => [
-                "id" => $this->userAuth->id,
-                "name" => $enterprise->name,
-                "email" => $enterprise->email,
-                "address" => $enterprise->address,
-                "photo" => $enterprise->photo
-            ]
-        ]);
+        try {
+            // Busca a empresa pelo ID do token
+            $enterprise = (new Enterprise())->selectById($this->userAuth->id);
+
+            if (!$enterprise) {
+                $this->back([
+                    "type" => "error",
+                    "message" => "Empresa não encontrada"
+                ], 404);
+                return;
+            }
+
+            // Retorna os dados da empresa
+            $this->back([
+                "type" => "success",
+                "message" => "Dados da empresa carregados com sucesso",
+                "enterprise" => [
+                    "id" => $enterprise->id,
+                    "name" => $enterprise->name,
+                    "email" => $enterprise->email,
+                    "address" => $enterprise->address,
+                    "photo" => $enterprise->photo
+                ]
+            ]);
+
+        } catch (Exception $e) {
+            error_log("Erro ao buscar empresa: " . $e->getMessage());
+            $this->back([
+                "type" => "error",
+                "message" => "Erro interno do servidor"
+            ], 500);
+        }
+    }
+
+    public function updateEnterprise(array $data)
+    {
+        // Autentica primeiro
+        $this->auth();
+        
+        if (!$this->userAuth) {
+            $this->back([
+                "type" => "error",
+                "message" => "Token inválido ou expirado"
+            ], 401);
+            return;
+        }
+
+        // Se não recebeu dados no parâmetro, pega do $_POST
+        if (empty($data)) {
+            $data = $_POST;
+        }
+
+        // Validação básica
+        if (empty($data["name"]) || empty($data["email"]) || empty($data["address"])) {
+            $this->back([
+                "type" => "error",
+                "message" => "Nome, email e endereço são obrigatórios"
+            ], 400);
+            return;
+        }
+
+        try {
+            $enterprise = new Enterprise(
+                $this->userAuth->id,
+                $data["name"],
+                $data["email"],
+                '', // senha não é alterada aqui
+                $data["address"]
+            );
+
+            if (!$enterprise->update()) {
+                $this->back([
+                    "type" => "error",
+                    "message" => $enterprise->getMessage()
+                ], 400);
+                return;
+            }
+
+            $this->back([
+                "type" => "success",
+                "message" => "Empresa atualizada com sucesso!",
+                "enterprise" => [
+                    "id" => $enterprise->getId(),
+                    "name" => $enterprise->getName(),
+                    "email" => $enterprise->getEmail(),
+                    "address" => $enterprise->getAddress()
+                ]
+            ]);
+
+        } catch (Exception $e) {
+            error_log("Erro ao atualizar empresa: " . $e->getMessage());
+            $this->back([
+                "type" => "error",
+                "message" => "Erro interno do servidor"
+            ], 500);
+        }
+    }
+
+    public function updatePhoto(array $data)
+    {
+        $this->auth();
+        
+        if (!$this->userAuth) {
+            $this->back([
+                "type" => "error",
+                "message" => "Token inválido ou expirado"
+            ], 401);
+            return;
+        }
+
+        $photo = (!empty($_FILES["photo"]["name"]) ? $_FILES["photo"] : null);
+
+        if (!$photo) {
+            $this->back([
+                "type" => "error",
+                "message" => "Por favor, envie uma foto do tipo JPG ou JPEG"
+            ], 400);
+            return;
+        }
+
+        try {
+            $imageUploader = new ImageUploader();
+            $upload = $imageUploader->upload($photo);
+
+            if (!$upload) {
+                $this->back([
+                    "type" => "error",
+                    "message" => "Erro ao fazer upload da imagem"
+                ], 400);
+                return;
+            }
+
+            $enterprise = new Enterprise(
+                id: $this->userAuth->id,
+                photo: $upload
+            );
+
+            if (!$enterprise->updatePhoto()) {
+                $this->back([
+                    "type" => "error",
+                    "message" => $enterprise->getMessage()
+                ], 400);
+                return;
+            }
+
+            $this->back([
+                "type" => "success",
+                "message" => "Foto atualizada com sucesso!",
+                "enterprise" => [
+                    "id" => $enterprise->getId(),
+                    "photo" => $enterprise->getPhoto()
+                ]
+            ]);
+
+        } catch (Exception $e) {
+            error_log("Erro ao atualizar foto: " . $e->getMessage());
+            $this->back([
+                "type" => "error",
+                "message" => "Erro interno do servidor"
+            ], 500);
+        }
     }
 
     public function tokenValidate()
     {
         $this->auth();
+
+        if (!$this->userAuth) {
+            $this->back([
+                "type" => "error",
+                "message" => "Token inválido"
+            ], 401);
+            return;
+        }
 
         $this->back([
             "type" => "success",
@@ -46,6 +212,8 @@ class Enterprises extends Api
             ]
         ]);
     }
+
+    // ... outros métodos mantidos iguais ...
 
     public function listEnterprises()
     {
@@ -68,74 +236,39 @@ class Enterprises extends Api
         ]);
     }
 
-
     public function createEnterprise(array $data): void
-{
-    header('Content-Type: application/json; charset=UTF-8');
-
-    if (empty($data)) {
-        $data = $_POST;
-    }
-
-    // DEBUG LOG
-    error_log("POST recebido: " . json_encode($data));
-
-    if (
-        empty($data["name"]) ||
-        empty($data["email"]) ||
-        empty($data["password"]) ||
-        empty($data["address"])
-    ) {
-        $this->back([
-            "type" => "error",
-            "message" => "Preencha todos os campos obrigatórios!"
-        ]);
-        return;
-    }
-
-    $enterprise = new Enterprise(
-        null,
-        $data["name"],
-        $data["email"],
-        $data["password"],
-        $data["address"]
-    );
-
-    if (!$enterprise->insert()) {
-        $this->back([
-            "type" => "error",
-            "message" => $enterprise->getMessage()
-        ]);
-        return;
-    }
-
-    $this->back([
-        "type" => "success",
-        "message" => "Empresa cadastrada com sucesso!"
-    ], 201);
-}
-
-
-
-    public function updateEnterprise(array $data)
     {
-        if (!$this->userAuth) {
+        header('Content-Type: application/json; charset=UTF-8');
+
+        if (empty($data)) {
+            $data = $_POST;
+        }
+
+        // DEBUG LOG
+        error_log("POST recebido: " . json_encode($data));
+
+        if (
+            empty($data["name"]) ||
+            empty($data["email"]) ||
+            empty($data["password"]) ||
+            empty($data["address"])
+        ) {
             $this->back([
                 "type" => "error",
-                "message" => "Você não pode estar aqui.."
+                "message" => "Preencha todos os campos obrigatórios!"
             ]);
             return;
         }
 
         $enterprise = new Enterprise(
-            $this->userAuth->id,
+            null,
             $data["name"],
             $data["email"],
-            '',
+            $data["password"],
             $data["address"]
         );
 
-        if (!$enterprise->update()) {
+        if (!$enterprise->insert()) {
             $this->back([
                 "type" => "error",
                 "message" => $enterprise->getMessage()
@@ -145,55 +278,8 @@ class Enterprises extends Api
 
         $this->back([
             "type" => "success",
-            "message" => $enterprise->getMessage(),
-            "enterprise" => [
-                "id" => $enterprise->getId(),
-                "name" => $enterprise->getName(),
-                "email" => $enterprise->getEmail()
-            ]
-        ]);
-    }
-
-    public function updatePhoto(array $data)
-    {
-        $imageUploader = new ImageUploader();
-        $photo = (!empty($_FILES["photo"]["name"]) ? $_FILES["photo"] : null);
-
-        $this->auth();
-
-        if (!$photo) {
-            $this->back([
-                "type" => "error",
-                "message" => "Por favor, envie uma foto do tipo JPG ou JPEG"
-            ]);
-            return;
-        }
-
-        $upload = $imageUploader->upload($photo);
-
-        $enterprise = new Enterprise(
-            id: $this->userAuth->id,
-            photo: $upload
-        );
-
-        if (!$enterprise->updatePhoto()) {
-            $this->back([
-                "type" => "error",
-                "message" => $enterprise->getMessage()
-            ]);
-            return;
-        }
-
-        $this->back([
-            "type" => "success",
-            "message" => $enterprise->getMessage(),
-            "enterprise" => [
-                "id" => $enterprise->getId(),
-                "name" => $enterprise->getName(),
-                "email" => $enterprise->getEmail(),
-                "photo" => $enterprise->getPhoto()
-            ]
-        ]);
+            "message" => "Empresa cadastrada com sucesso!"
+        ], 201);
     }
 
     public function getPhoto(array $data)
@@ -265,26 +351,35 @@ class Enterprises extends Api
     }
 
     public function loginEnterprise(): void
-    {
-        $enterprise = new Enterprise();
-        
-        if ($enterprise->login($_POST['email'] ?? '', $_POST['password'] ?? '')) {
-            echo json_encode([
-                'type' => 'success',
-                'message' => $enterprise->getMessage(),
-                'user' => [
-                    'id' => $enterprise->getId(),
-                    'name' => $enterprise->getName(),
-                    'email' => $enterprise->getEmail()
-                ]
-            ]);
-        } else {
-            echo json_encode([
-                'type' => 'error',
-                'message' => $enterprise->getMessage()
-            ]);
-        }
-    }
+{
+    $enterprise = new Enterprise();
 
+    $jwt = new TokenJWT();
+    
+    if ($enterprise->login($_POST['email'] ?? '', $_POST['password'] ?? '')) {
+        // gera o token
+        $token = $jwt->create([
+            "id" => $enterprise->getId(),
+            "name" => $enterprise->getName(),
+            "email" => $enterprise->getEmail()
+        ]);
+
+        echo json_encode([
+            'type' => 'success',
+            'message' => $enterprise->getMessage(),
+            'user' => [
+                'id' => $enterprise->getId(),
+                'name' => $enterprise->getName(),
+                'email' => $enterprise->getEmail(),
+                'token' => $token // <-- importante
+            ]
+        ]);
+    } else {
+        echo json_encode([
+            'type' => 'error',
+            'message' => $enterprise->getMessage()
+        ]);
+    }
+}
 
 }
