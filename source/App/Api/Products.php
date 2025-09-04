@@ -3,6 +3,7 @@
 namespace Source\App\Api;
 
 use Source\Models\Product;
+use Source\Support\ImageUploader;
 
 class Products extends Api
 {
@@ -40,40 +41,60 @@ class Products extends Api
     public function createProduct(array $data): void
     {
         $this->auth();
-       
-        if (!$data || in_array("", $data)) {
+
+        if (!$data || !is_array($data) || empty($data)) {
             $this->back([
                 "type" => "error",
-                "message" => "Preencha todos os campos"
+                "message" => "Dados não fornecidos"
             ]);
             return;
         }
 
-        $product = new Product(
-            null,
-            $this->userAuth->id,
-            $data["name"],
-            $data["description"],
-            (float)$data["price"],
-            (int)$data["stock"],
-            $data["image"],
-            (int)$data["category_id"]
-        );
-
-        $insert = $product->insert();
-
-        if (!$insert) {
-            $this->back([
-                "type" => "error",
-                "message" => "Erro ao cadastrar produto"
-            ]);
-            return;
+        $requiredFields = ['name', 'description', 'price', 'stock', 'category_id'];
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                $this->back([
+                    "type" => "error",
+                    "message" => "Campo obrigatório faltando: {$field}"
+                ]);
+                return;
+            }
         }
 
-        $this->back([
-            "type" => "success",
-            "message" => "Produto cadastrado com sucesso"
-        ]);
+        try {
+            $product = new Product(
+                null,
+                $this->userAuth->id,
+                trim($data["name"]),
+                trim($data["description"]),
+                (float)$data["price"],
+                (int)$data["stock"],
+                "",
+                (int)$data["category_id"]
+            );
+
+            $insert = $product->insert();
+
+            if (!$insert) {
+                $this->back([
+                    "type" => "error",
+                    "message" => "Erro ao cadastrar produto no banco de dados"
+                ]);
+                return;
+            }
+
+            $this->back([
+                "type" => "success",
+                "message" => "Produto cadastrado com sucesso",
+                "product_id" => $insert
+            ]);
+
+        } catch (\Exception $e) {
+            $this->back([
+                "type" => "error",
+                "message" => "Erro interno: " . $e->getMessage()
+            ]);
+        }
     }
 
     public function getById(array $data)
@@ -153,28 +174,113 @@ class Products extends Api
             return;
         }
 
-        $product = new Product(
-            (int)$data["id"],
-            $this->userAuth->id,
-            $data["name"],
-            $data["description"],
-            (float)$data["price"],
-            (int)$data["stock"],
-            $data["image"],
-            (int)$data["category_id"]
-        );
+        $requiredFields = ['name', 'description', 'price', 'stock', 'category_id'];
+        foreach ($requiredFields as $field) {
+            if (!isset($data[$field]) || $data[$field] === '' || $data[$field] === null) {
+                $this->back([
+                    "type" => "error",
+                    "message" => "Campo obrigatório faltando: {$field}"
+                ]);
+                return;
+            }
+        }
 
-        if (!$product->update()) {
+        try {
+            $product = new Product(
+                (int)$data["id"],
+                $this->userAuth->id,
+                trim($data["name"]),
+                trim($data["description"]),
+                (float)$data["price"],
+                (int)$data["stock"],
+                "",
+                (int)$data["category_id"]
+            );
+
+            if (!$product->update()) {
+                $this->back([
+                    "type" => "error",
+                    "message" => "Erro ao atualizar produto"
+                ]);
+                return;
+            }
+
+            $this->back([
+                "type" => "success",
+                "message" => "Produto atualizado com sucesso"
+            ]);
+
+        } catch (\Exception $e) {
             $this->back([
                 "type" => "error",
-                "message" => "Erro ao atualizar produto"
+                "message" => "Erro interno: " . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function updatePhoto(array $data): void
+    {
+        $this->auth();
+
+        if (empty($_FILES["photo"])) {
+            $this->back([
+                "type" => "error",
+                "message" => "Nenhuma imagem enviada"
             ]);
             return;
         }
 
-        $this->back([
-            "type" => "success",
-            "message" => "Produto atualizado com sucesso"
-        ]);
+        try {
+            $uploader = new ImageUploader();
+            $uploaded = $uploader->upload($_FILES["photo"], "products");
+
+            if (!$uploaded) {
+                $this->back([
+                    "type" => "error",
+                    "message" => "Falha no upload da imagem"
+                ]);
+                return;
+            }
+
+            $productId = (int)($data["id"] ?? 0);
+            if ($productId <= 0) {
+                $this->back([
+                    "type" => "error",
+                    "message" => "ID do produto inválido"
+                ]);
+                return;
+            }
+
+            $product = Product::getById($productId);
+            if (!$product) {
+                $this->back([
+                    "type" => "error",
+                    "message" => "Produto não encontrado"
+                ]);
+                return;
+            }
+
+            $product->image = $uploaded;
+            if (!$product->updatePhoto()) {
+                $this->back([
+                    "type" => "error",
+                    "message" => "Não foi possível atualizar a imagem do produto"
+                ]);
+                return;
+            }
+
+            $this->back([
+                "type" => "success",
+                "message" => "Imagem do produto atualizada com sucesso",
+                "image" => $uploaded
+            ]);
+
+        } catch (\Exception $e) {
+            $this->back([
+                "type" => "error",
+                "message" => "Erro no upload: " . $e->getMessage()
+            ]);
+        }
     }
 }
+
